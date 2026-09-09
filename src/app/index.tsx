@@ -1,98 +1,239 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { styles } from "../styles";
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+
       <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* HEADER */}
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+          <View style={styles.header}>
+            <View style={styles.logoContainer}>
+              <MaterialCommunityIcons
+                name="tow-truck"
+                size={38}
+                color="#1F2937"
+              />
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+              <Text style={styles.logoTitle}>Guincho{"\n"}a caminho!</Text>
+            </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
+            <Pressable style={styles.userSection}>
+              <Ionicons
+                name="person-circle-outline"
+                size={42}
+                color="#374151"
+              />
+
+              <View style={styles.userDropdown}>
+                <Text style={styles.userName}>Mister Potato</Text>
+
+                <Ionicons name="chevron-down" size={16} color="#374151" />
+              </View>
+            </Pressable>
+          </View>
+
+          {/* GPS */}
+
+          <View style={styles.gpsStatus}>
+            <View style={styles.badgeGps}>
+              <View style={styles.gpsDot} />
+
+              <Text style={styles.gpsText}>GPS ativo</Text>
+            </View>
+
+            <Ionicons name="help-circle-outline" size={22} color="#6B7280" />
+          </View>
+
+          {/* EMERGÊNCIA */}
+
+          <View style={styles.cardEmergency}>
+            <View style={styles.emergencyTag}>
+              <Text style={styles.emergencyTagText}>Emergência</Text>
+            </View>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.btnEmergency,
+                pressed && styles.buttonPressed,
+              ]}
+              onPress={() => {
+                console.log("Solicitação de emergência");
+              }}
+            >
+              <Ionicons name="flash" size={22} color="#FFFFFF" />
+
+              <Text style={styles.btnEmergencyText}>Socorro em 1 toque</Text>
+            </Pressable>
+
+            <Text style={styles.emergencySubtext}>
+              Em caso de emergência peça seu guincho já!
+            </Text>
+          </View>
+
+          {/* SERVIÇOS */}
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>SERVIÇOS</Text>
+
+            <View style={styles.servicesGrid}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.serviceCard,
+                  pressed && styles.servicePressed,
+                ]}
+              >
+                <MaterialCommunityIcons
+                  name="car-outline"
+                  size={32}
+                  color="#1F2937"
+                />
+
+                <Text style={styles.serviceText}>Meus veículos</Text>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.serviceCard,
+                  pressed && styles.servicePressed,
+                ]}
+              >
+                <Ionicons name="time-outline" size={32} color="#1F2937" />
+
+                <Text style={styles.serviceText}>Agendar guincho</Text>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.serviceCard,
+                  pressed && styles.servicePressed,
+                ]}
+              >
+                <Ionicons
+                  name="document-text-outline"
+                  size={32}
+                  color="#1F2937"
+                />
+
+                <Text style={styles.serviceText}>
+                  Histórico de{"\n"}Comprovantes
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+
+          {/* PEDIR GUINCHO */}
+
+          <View style={styles.cardAction}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardHeaderTitle}>pedir guincho</Text>
+
+              <Ionicons name="ellipsis-vertical" size={22} color="#6B7280" />
+            </View>
+
+            <View style={styles.locationInput}>
+              <Ionicons name="location" size={23} color="#EF4444" />
+
+              <Text style={styles.locationText} numberOfLines={2}>
+                Av. Avenida Augusto Franco, 2340 - SE
+              </Text>
+            </View>
+
+            <View style={styles.priceRow}>
+              <View style={styles.estimateContainer}>
+                <Text style={styles.estimateLabel}>Estimativa</Text>
+
+                <Text style={styles.estimateValue}>R$ 180</Text>
+              </View>
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.btnGreen,
+                  pressed && styles.buttonPressed,
+                ]}
+                onPress={() => {
+                  console.log("Pedido de guincho");
+                }}
+              >
+                <Text style={styles.btnGreenText}>Peça Seu Guincho</Text>
+              </Pressable>
+            </View>
+          </View>
+
+          {/* VALIDAR SEGURO */}
+
+          <View style={styles.cardAction}>
+            <View style={styles.cardHeader}>
+              <View style={styles.cardHeaderLeft}>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={25}
+                  color="#16A34A"
+                />
+
+                <Text style={styles.cardHeaderTitle}>Validar Seguro</Text>
+              </View>
+
+              <Ionicons name="ellipsis-vertical" size={22} color="#6B7280" />
+            </View>
+
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.fieldInput}
+                placeholder="CPF ou número da apólice"
+                placeholderTextColor="#9CA3AF"
+              />
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.btnGreen,
+                  styles.verifyButton,
+                  pressed && styles.buttonPressed,
+                ]}
+                onPress={() => {
+                  console.log("Verificando seguro");
+                }}
+              >
+                <Text style={styles.btnGreenText}>Verificar</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.infoBox}>
+              <Ionicons
+                name="information-circle-outline"
+                size={20}
+                color="#2563EB"
+              />
+
+              <Text style={styles.infoText}>
+                Reembolso direto com Allianz, Porto Seguro e Liberty. Consulte
+                sua cobertura antes do chamado.
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.bottomSpace} />
+        </ScrollView>
       </SafeAreaView>
-    </ThemedView>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
